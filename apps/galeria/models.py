@@ -14,10 +14,10 @@ class Fotografia(models.Model):
         ("COMETA", "Cometa"),
     ]
 
-    nome = models.CharField(max_length=100, null=False, blank=False)
-    legenda = models.CharField(max_length=150, null=False, blank=False)
+    nome = models.CharField(max_length=100, blank=False)
+    legenda = models.CharField(max_length=150, blank=False)
     categoria = models.CharField(max_length=100, choices=OPCOES_CATEGORIA, default='')
-    descricao = models.TextField(null=False, blank=False)
+    descricao = models.TextField(blank=False)
     foto = models.ImageField(upload_to="fotos/%Y/%m/%d/", blank=True)
     publicada = models.BooleanField(default=True)
     data_fotografia = models.DateTimeField(default=datetime.now, blank=False)
