@@ -7,7 +7,7 @@ class Fotografia(models.Model):
     OPCOES_CATEGORIA = [
         ("NEBULOSA","Nebulosa"),
         ("ESTRELA","Estrela"),
-        ("GALÁXIA","Galáxia"),
+        ("GALAXIA","Galáxia"),
         ("PLANETA","Planeta"),
         ("SATELITE", "Satélite"),
         ("ASTEROIDE", "Asteroide"),
