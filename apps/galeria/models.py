@@ -9,6 +9,9 @@ class Fotografia(models.Model):
         ("ESTRELA","Estrela"),
         ("GALÁXIA","Galáxia"),
         ("PLANETA","Planeta"),
+        ("SATELITE", "Satélite"),
+        ("ASTEROIDE", "Asteroide"),
+        ("COMETA", "Cometa"),
     ]
 
     nome = models.CharField(max_length=100, null=False, blank=False)
