@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.galeria.apps.GaleriaConfig',
     'apps.usuarios.apps.UsuariosConfig',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -144,3 +146,22 @@ MESSAGE_TAGS = {
     messages.ERROR: "danger",
     messages.SUCCESS: "success",
 }
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET')
+}
+
+
+cloudinary.config(
+  cloud_name = CLOUDINARY_STORAGE['CLOUD_NAME'],
+  api_key = CLOUDINARY_STORAGE['API_KEY'],
+  api_secret = CLOUDINARY_STORAGE['API_SECRET']
+)
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

@@ -3,6 +3,9 @@ from apps.galeria.models import Fotografia
 from django.contrib import messages
 from apps.galeria.forms import FotografiaForm
 
+from cloudinary.uploader import upload
+from cloudinary.utils import cloudinary_url
+
 def index(request):
     if not request.user.is_authenticated:
         messages.error(request, 'Usuário não logado')
@@ -13,7 +16,8 @@ def index(request):
 
 def imagem(request, foto_id):
     fotografia = get_object_or_404(Fotografia, pk=foto_id)
-    return render(request, 'galeria/imagem.html', {"fotografia": fotografia})
+    imagem_url = cloudinary_url(fotografia.cloudinary_public_id, width=800, height=800, crop="fill")[0]
+    return render(request, 'galeria/imagem.html', {"fotografia": fotografia, 'imagem_url': imagem_url})
 
 def buscar(request):
     if not request.user.is_authenticated:
@@ -40,6 +44,16 @@ def nova_imagem(request):
         form = FotografiaForm(request.POST, request.FILES)
         
         if form.is_valid():
+            imagem = upload(
+                request.FILES['foto'].file,
+                public_id=f"galeria/{form.cleaned_data['nome']}",
+                crop="scale",
+                width=800,
+                height=600
+            )
+
+            form.instance.cloudinary_public_id = imagem['public_id']
+
             form.save()
             messages.success(request, 'Fotografia cadastrada com sucesso')
             return redirect('index')
@@ -51,13 +65,24 @@ def editar_imagem(request, foto_id):
         messages.error(request, 'Usuário não logado')
         return redirect('login')
     
-    fotografia = Fotografia.objects.get(id=foto_id)
+    fotografia = get_object_or_404(Fotografia, id=foto_id)
     form = FotografiaForm(instance=fotografia)
 
     if request.method == 'POST':
         form = FotografiaForm(request.POST, request.FILES, instance=fotografia)
         
         if form.is_valid():
+            if 'foto' in request.FILES:
+                imagem = upload(
+                    request.FILES['foto'].file,
+                    public_id=f"galeria/{form.cleaned_data['nome']}",
+                    crop="scale",
+                    width=800,
+                    height=800
+                )
+
+                form.instance.cloudinary_public_id = imagem['public_id']
+            
             form.save()
             messages.success(request, 'Fotografia editada com sucesso')
             return redirect('index')
